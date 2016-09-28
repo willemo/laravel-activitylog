@@ -37,7 +37,7 @@ trait LogsActivity
         });
     }
 
-    public function activity(): MorphMany
+    public function loggedActivity(): MorphMany
     {
         return $this->morphMany(Activity::class, 'subject');
     }

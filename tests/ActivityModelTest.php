@@ -55,7 +55,7 @@ class ActivityModelTest extends TestCase
         $causer = User::first();
         $activity = Activity::causedBy($causer)->get();
 
-        $this->assertCount($causer->activity->count(), $activity);
+        $this->assertCount($causer->causedActivity->count(), $activity);
     }
 
     /** @test */
@@ -64,6 +64,6 @@ class ActivityModelTest extends TestCase
         $subject = User::first();
         $activity = Activity::forSubject($subject)->get();
 
-        $this->assertCount($subject->activity->count(), $activity);
+        $this->assertCount($subject->loggedActivity->count(), $activity);
     }
 }

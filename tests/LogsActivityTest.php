@@ -91,7 +91,7 @@ class LogsActivityTest extends TestCase
         $article->name = 'changed name';
         $article->save();
 
-        $activities = $article->activity;
+        $activities = $article->loggedActivity;
 
         $this->assertCount(2, $activities);
     }
@@ -108,7 +108,7 @@ class LogsActivityTest extends TestCase
 
         $article->delete();
 
-        $activities = $article->activity;
+        $activities = $article->loggedActivity;
 
         $this->assertCount(3, $activities);
 
