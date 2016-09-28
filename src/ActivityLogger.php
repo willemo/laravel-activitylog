@@ -37,9 +37,7 @@ class ActivityLogger
 
         $this->properties = collect();
 
-        $authDriver = $config['laravel-activitylog']['default_auth_driver'] ?? $auth->getDefaultDriver();
-
-        $this->causedBy = $auth->guard($authDriver)->user();
+        $this->causedBy = $this->resolveCauser($auth, $config);
 
         $this->logName = $config['laravel-activitylog']['default_log_name'];
 
@@ -203,5 +201,26 @@ class ActivityLogger
         }
 
         return $activityModel;
+    }
+
+    /**
+     * @param  \Illuminate\Auth\AuthManager            $auth
+     * @param  \Illuminate\Contracts\Config\Repository $config
+     *
+     * @throws \Spatie\Activitylog\Exceptions\InvalidConfiguration
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    protected function resolveCauser(AuthManager $auth, Repository $config)
+    {
+        $causerResolver = $config['laravel-activitylog']['caused_by_resolver'];
+
+        $reflection = new \ReflectionFunction($causerResolver);
+
+        if (! $reflection->isClosure()) {
+            throw InvalidConfiguration::causedByResolverIsNotValid();
+        }
+
+        return call_user_func_array($causerResolver, [$auth, $config]);
     }
 }

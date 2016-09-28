@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Config\Repository;
+
 return [
 
     /*
@@ -24,6 +27,16 @@ return [
      * If this is null we'll use the default Laravel auth driver.
      */
     'default_auth_driver' => null,
+
+    /*
+     * You can specify the code that resolves the causer of the activity.
+     * By default it will use the auth driver to get the logged in user.
+     */
+    'caused_by_resolver' => function (AuthManager $auth, Repository $config) {
+        $authDriver = $config['laravel-activitylog']['default_auth_driver'] ?? $auth->getDefaultDriver();
+
+        return $auth->guard($authDriver)->user();
+    },
 
     /*
      * If set to true, the subject returns soft deleted models.
